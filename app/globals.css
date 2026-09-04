@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 60 33% 98%;
+    --foreground: 43 19% 7%;
+    --primary: 43 19% 7%;
+    --primary-foreground: 60 33% 98%;
+    --secondary: 60 15% 94%;
+    --secondary-foreground: 43 19% 7%;
+    --muted: 60 15% 94%;
+    --muted-foreground: 50 5% 42%;
+    --accent: 60 15% 94%;
+    --accent-foreground: 43 19% 7%;
+    --destructive: 4 59% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 53 11% 82%;
+    --input: 53 11% 82%;
+    --ring: 17 100% 56%;
+    --popover: 60 33% 98%;
+    --popover-foreground: 43 19% 7%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply m-0 bg-background text-foreground antialiased;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+}
