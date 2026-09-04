@@ -10,6 +10,7 @@ import {
   Archive,
   BarChart3,
   Bell,
+  BookOpen,
   Bot,
   CalendarDays,
   Check,
@@ -17,19 +18,24 @@ import {
   ChevronLeft,
   ChevronRight,
   Circle,
+  Code2,
   Copy,
   CreditCard,
   Download,
   Eye,
   ExternalLink,
+  FileText,
   GitBranch,
   Home,
+  ImagePlus,
   Inbox,
   Instagram,
+  Layers3,
   Loader2,
   Maximize2,
   Menu,
   MessageSquare,
+  Minus,
   MoreHorizontal,
   Paperclip,
   Play,
@@ -42,6 +48,7 @@ import {
   Sparkles,
   Trash2,
   Undo2,
+  Upload,
   UserRound,
   Workflow,
   X,
@@ -899,6 +906,114 @@ function ShopSettingsPreview({ copy, sectionIndex }: { copy: PlateCopy; sectionI
   )
 }
 
+function ComponentInventory({ copy }: { copy: ComponentCopy }) {
+  const inventory = copy.inventory
+  const [toastVisible, setToastVisible] = useState(false)
+  const [advancedOpen, setAdvancedOpen] = useState(true)
+  const [confidence, setConfidence] = useState(78)
+  const [messageLimit, setMessageLimit] = useState(50)
+  const [fileName, setFileName] = useState<string>(inventory.fileName)
+
+  return (
+    <div className="mt-5 rounded-[10px] border border-black/20 bg-[#fffef8] p-6 sm:p-8">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <SpecLabel>{inventory.title}</SpecLabel>
+        <StatusPill tone="ready">{inventory.inUse}</StatusPill>
+      </div>
+
+      <div className="grid gap-x-12 gap-y-14 lg:grid-cols-2 xl:grid-cols-4">
+        <section>
+          <p className="mb-4 text-[11px] font-medium">{inventory.identity}</p>
+          <div className="flex items-center gap-5">
+            <div className="flex -space-x-2">
+              {inventory.people.map((person, index) => (
+                <span key={person} title={person} className={`relative flex size-10 items-center justify-center rounded-full border-2 border-[#fffef8] text-[10px] font-medium ${index === 1 ? "bg-[#ff5a1f] text-white" : index === 2 ? "bg-[#dfe8e2]" : "bg-[#16140f] text-white"}`}>
+                  {person.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+                  {index === 0 && <span className="absolute bottom-0 right-0 size-2.5 rounded-full border-2 border-[#fffef8] bg-[#276749]" aria-label={inventory.online} />}
+                </span>
+              ))}
+            </div>
+            <div className="group relative">
+              <button aria-describedby="assign-tooltip" className="flex size-10 items-center justify-center rounded-full border border-black/20 transition hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-[#ff5a1f]/35"><UserRound className="size-4" /></button>
+              <span id="assign-tooltip" role="tooltip" className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 z-20 w-max -translate-x-1/2 rounded-[4px] bg-[#16140f] px-2.5 py-1.5 text-[9px] text-white opacity-0 shadow-lg transition group-hover:opacity-100 group-focus-within:opacity-100">{inventory.tooltip}</span>
+            </div>
+          </div>
+          <button onClick={() => setToastVisible(true)} className="mt-5 rounded-full border border-black/20 px-4 py-2.5 text-[10px] font-medium hover:border-black">{inventory.showToast}</button>
+        </section>
+
+        <section>
+          <p className="mb-4 text-[11px] font-medium">{inventory.loading}</p>
+          <div className="space-y-3" aria-label={inventory.skeleton}>
+            {["w-4/5", "w-2/3"].map((width, index) => <div key={width} className="flex items-center gap-3"><span className="size-9 animate-pulse rounded-full bg-black/10" /><span className="flex-1 space-y-2"><span className={`block h-2.5 animate-pulse rounded-full bg-black/10 ${width}`} /><span className="block h-2 w-2/5 animate-pulse rounded-full bg-black/[0.06]" /></span><span className="font-mono text-[8px] text-[#8a877f]">0{index + 1}</span></div>)}
+          </div>
+          <div className="mt-5 flex items-center justify-between text-[9px]"><span>{inventory.progress}</span><span className="font-mono">72%</span></div>
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-black/10"><span className="block h-full w-[72%] rounded-full bg-[#16140f]" /></div>
+        </section>
+
+        <section>
+          <p className="mb-4 text-[11px] font-medium">{inventory.controls}</p>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block"><span className="text-[9px] font-medium">{inventory.time}</span><input type="time" defaultValue="10:30" className={`mt-1.5 h-10 w-full rounded-[4px] border border-black/20 bg-white px-2.5 text-xs ${fieldFocusClass}`} /></label>
+            <label className="block"><span className="text-[9px] font-medium">{inventory.currency}</span><span className="mt-1.5 flex h-10 items-center rounded-[4px] border border-black/20 bg-white px-2.5 text-xs"><span className="mr-2 text-[#716f67]">₮</span><input defaultValue="50,000" inputMode="numeric" className="min-w-0 flex-1 bg-transparent outline-none" /></span></label>
+          </div>
+          <label className="mt-4 block"><span className="flex items-center justify-between text-[9px] font-medium"><span>{inventory.confidence}</span><span className="font-mono">{confidence}%</span></span><input type="range" min="0" max="100" value={confidence} onChange={(event) => setConfidence(Number(event.target.value))} className="mt-2 h-1.5 w-full cursor-pointer accent-[#16140f]" /></label>
+          <div className="mt-4 flex items-center justify-between"><span className="text-[9px] font-medium">{inventory.messages}</span><span className="flex items-center rounded-full border border-black/20 bg-white"><button onClick={() => setMessageLimit((value) => Math.max(0, value - 10))} className="flex size-8 items-center justify-center" aria-label={inventory.decrease}><Minus className="size-3" /></button><span className="w-8 text-center font-mono text-[10px]">{messageLimit}</span><button onClick={() => setMessageLimit((value) => value + 10)} className="flex size-8 items-center justify-center" aria-label={inventory.increase}><Plus className="size-3" /></button></span></div>
+        </section>
+
+        <section>
+          <p className="mb-4 text-[11px] font-medium">{inventory.disclosure}</p>
+          <button onClick={() => setAdvancedOpen((open) => !open)} aria-expanded={advancedOpen} className="flex h-11 w-full items-center justify-between rounded-[4px] bg-[#f5f5ee] px-3 text-left text-[10px] font-medium"><span className="flex items-center gap-2"><Layers3 className="size-3.5 text-[#716f67]" />{inventory.advanced}</span><ChevronDown className={`size-3.5 transition-transform ${advancedOpen ? "rotate-180" : ""}`} /></button>
+          {advancedOpen && <div className="px-3 pb-2 pt-3 font-mono text-[9px] leading-relaxed text-[#716f67]">{inventory.advancedValue}</div>}
+        </section>
+      </div>
+
+      <div className="mt-14 grid gap-12 xl:grid-cols-[0.8fr_1.2fr]">
+        <section>
+          <p className="mb-4 text-[11px] font-medium">{inventory.media}</p>
+          <div className="grid grid-cols-3 gap-3">
+            <label className="cursor-pointer"><span className="text-[9px] font-medium">{inventory.image}</span><span className="mt-1.5 flex aspect-square items-center justify-center rounded-[5px] bg-[#eee5d8] text-[#716f67] transition hover:bg-[#e6dac9]"><ImagePlus className="size-5" /></span><input type="file" accept="image/*" className="sr-only" /></label>
+            <div><span className="text-[9px] font-medium">{inventory.multiImage}</span><div className="mt-1.5 grid aspect-square grid-cols-2 gap-1"><span className="rounded-[4px] bg-[#dbe5df]" /><span className="rounded-[4px] bg-[#e9ddd0]" /><label className="col-span-2 flex cursor-pointer items-center justify-center rounded-[4px] border border-dashed border-black/20 text-[8px] text-[#716f67]"><Plus className="mr-1 size-3" />{inventory.addImage}<input type="file" accept="image/*" multiple className="sr-only" /></label></div></div>
+            <label className="cursor-pointer"><span className="text-[9px] font-medium">{inventory.file}</span><span className="mt-1.5 flex aspect-square flex-col items-center justify-center rounded-[5px] bg-[#f5f5ee] px-2 text-center"><FileText className="size-5 text-[#716f67]" /><span className="mt-2 max-w-full truncate text-[8px]">{fileName}</span><span className="mt-1 inline-flex items-center gap-1 text-[8px] font-medium text-[#c74317]"><Upload className="size-2.5" />{inventory.chooseFile}</span></span><input type="file" className="sr-only" onChange={(event) => setFileName(event.target.files?.[0]?.name || inventory.fileName)} /></label>
+          </div>
+        </section>
+
+        <section>
+          <p className="mb-4 text-[11px] font-medium">{inventory.flowFields}</p>
+          <div className="grid gap-x-8 gap-y-8 md:grid-cols-2">
+            <div>
+              <p className="text-[9px] font-medium">{inventory.quickReplies}</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">{inventory.replies.map((reply) => <button key={reply} className="rounded-full border border-black/20 bg-white px-2.5 py-1.5 text-[8px] hover:border-black">{reply}</button>)}</div>
+              <p className="mt-5 text-[9px] font-medium">{inventory.buttonTemplate}</p>
+              <div className="mt-2 rounded-[5px] bg-[#f5f5ee] p-3"><p className="text-[9px] leading-relaxed">{inventory.message}</p><button className="mt-3 w-full rounded-full bg-black px-3 py-2 text-[8px] font-medium text-white">{inventory.track}</button></div>
+            </div>
+
+            <div>
+              <p className="text-[9px] font-medium">{inventory.dictionary}</p>
+              <div className="mt-2 space-y-1.5">{inventory.dictionaryRows.map((row) => <div key={row[0]} className="grid grid-cols-2 gap-1.5"><span className="rounded-[4px] bg-[#f5f5ee] px-2.5 py-2 font-mono text-[8px]">{row[0]}</span><span className="rounded-[4px] bg-[#f5f5ee] px-2.5 py-2 font-mono text-[8px] text-[#716f67]">{row[1]}</span></div>)}</div>
+              <p className="mt-5 text-[9px] font-medium">{inventory.dynamicOutputs}</p>
+              <div className="mt-2 flex flex-wrap gap-1.5">{inventory.outputs.map((output) => <span key={output} className="inline-flex items-center gap-1.5 rounded-full bg-[#f5f5ee] px-2.5 py-1.5 font-mono text-[8px]"><span className="size-1.5 rounded-full bg-[#ff5a1f]" />{output}</span>)}</div>
+            </div>
+
+            <div>
+              <p className="text-[9px] font-medium">{inventory.knowledge}</p>
+              <div className="mt-2 flex items-center gap-2 rounded-[5px] bg-[#f5f5ee] p-3"><BookOpen className="size-4 text-[#716f67]" /><span className="min-w-0 flex-1 truncate text-[8px]">{inventory.knowledgeValue}</span><Check className="size-3 text-[#276749]" /></div>
+              <p className="mt-5 text-[9px] font-medium">{inventory.code}</p>
+              <div className="mt-2 flex items-start gap-2 rounded-[5px] bg-[#16140f] p-3 text-[#f5f5ee]"><Code2 className="mt-0.5 size-3.5 text-[#ff5a1f]" /><code className="font-mono text-[8px] leading-relaxed">{inventory.codeValue}</code></div>
+            </div>
+
+            <div>
+              <p className="text-[9px] font-medium">{inventory.carousel}</p>
+              <div className="mt-2 flex gap-2 overflow-x-auto pb-2">{inventory.products.map((product, index) => <div key={product[0]} className="min-w-[132px] rounded-[5px] bg-[#f5f5ee] p-2"><div className={`aspect-[1.35] rounded-[4px] ${index === 0 ? "bg-[#e9ddd0]" : "bg-[#dbe5df]"}`} /><p className="mt-2 truncate text-[8px] font-medium">{product[0]}</p><p className="mt-1 font-mono text-[7px] text-[#716f67]">{product[1]}</p></div>)}</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {toastVisible && <div role="status" className="fixed bottom-5 right-5 z-[80] flex w-[min(340px,calc(100vw-40px))] items-start gap-3 rounded-[8px] border border-black/20 bg-[#fffef8] p-4 shadow-[0_20px_70px_rgba(22,20,15,0.24)]"><span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#276749] text-white"><Check className="size-3.5" /></span><div className="min-w-0 flex-1"><p className="text-xs font-medium">{inventory.toastTitle}</p><p className="mt-1 text-[10px] text-[#716f67]">{inventory.toastBody}</p></div><button onClick={() => setToastVisible(false)} className="p-1 text-[#716f67] hover:text-black" aria-label="Close"><X className="size-3.5" /></button></div>}
+    </div>
+  )
+}
+
 export function ReferencePage() {
   const [locale, setLocale] = useState<PlateLocale>("en")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -990,6 +1105,7 @@ export function ReferencePage() {
             </div>
           </div>
         </div>
+        <ComponentInventory copy={copy.components} />
       </section>
 
       <section id="workspaces" className="mx-auto max-w-[1440px] px-5 py-24 sm:px-8 md:py-32 lg:px-10">
